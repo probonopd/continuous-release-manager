@@ -62,7 +62,7 @@ func main() {
 				TagName:         &releaseTag,
 				TargetCommitish: &releaseCommitHash,
 				Name:            &releaseName,
-				Draft:           github.Bool(false), // Set Draft to false for non-draft release
+				Draft:           github.Bool(false), // Set the Draft parameter to false
 			}
 			createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 			if err != nil {
@@ -103,6 +103,7 @@ func main() {
 					TagName:         &releaseTag,
 					TargetCommitish: &releaseCommitHash,
 					Name:            &releaseName,
+					Draft:           github.Bool(false), // Set the Draft parameter to false
 				}
 				createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 				if err != nil {
