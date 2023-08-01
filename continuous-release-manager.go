@@ -118,7 +118,8 @@ func main() {
 	// At the end, after all other operations are done
 	// publish it to make it non-draft
 	logVerbose("Publishing release...")
-	_, _, err = client.Repositories.PublishRelease(ctx, repoOwner, repoName, *release.ID)
+	release.Draft = github.Bool(false) // Set the Draft field to false
+	_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, *release.ID, release)
 	if err != nil {
 		logError(fmt.Sprintf("Error publishing release: %v", err))
 	} else {
