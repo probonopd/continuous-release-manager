@@ -22,7 +22,8 @@ func main() {
 	client := github.NewClient(tc)
 
 	repoOwner := os.Getenv("GITHUB_REPOSITORY_OWNER")
-	repoName := os.Getenv("GITHUB_REPOSITORY")
+	repoFullName := os.Getenv("GITHUB_REPOSITORY")
+	repoName := extractRepositoryName(repoFullName)
 	releaseTag := "continuous"
 	releaseCommitHash := os.Getenv("GITHUB_SHA")
 	releaseName := "continuous"
@@ -72,6 +73,14 @@ func main() {
 			logInfo("Release with the name 'continuous' already exists and has the desired commit hash.")
 		}
 	}
+}
+
+func extractRepositoryName(fullName string) string {
+	parts := strings.Split(fullName, "/")
+	if len(parts) > 1 {
+		return parts[1]
+	}
+	return fullName
 }
 
 func logInfo(msg string) {
