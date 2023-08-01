@@ -30,11 +30,16 @@ To use the tool, set up a GitHub Actions workflow (or any CI/CD system) to autom
 
       - name: Upload to GitHub Release
         if: github.event_name == 'push'  # Only run for push events, not pull requests
-        run: |
-          gh release upload continuous ./build/Filer_Ubuntu.zip
-          gh release edit continuous --draft false
+        uses: xresloader/upload-to-github-release@v1.3.12
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "continuous-release-manager-*"
+          draft: false
+          verbose: true
+          branches: main
+          update_latest_release: true
+          tag_name: continuous
 ```
 
 ## Cirrus CI (for the FreeBSD build)
