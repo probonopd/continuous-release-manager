@@ -50,6 +50,8 @@ func main() {
 	logVerbose(fmt.Sprintf("Release Tag: %s", releaseTag))
 	logVerbose(fmt.Sprintf("Release Commit Hash: %s", releaseCommitHash))
 
+	var createdRelease *github.RepositoryRelease
+
 	// Check if the release with the name "continuous" already exists
 	logInfo("Checking for existing release...")
 	release, _, err := client.Repositories.GetReleaseByTag(ctx, repoOwner, repoName, releaseTag)
@@ -63,7 +65,7 @@ func main() {
 				TargetCommitish: &releaseCommitHash,
 				Name:            &releaseName,
 			}
-			createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
+			createdRelease, _, err = client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 			if err != nil {
 				// Check if the error is due to insufficient permissions
 				if strings.Contains(err.Error(), "403 Resource not accessible by integration") {
@@ -103,7 +105,7 @@ func main() {
 					TargetCommitish: &releaseCommitHash,
 					Name:            &releaseName,
 				}
-				createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
+				createdRelease, _, err = client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 				if err != nil {
 					logError(fmt.Sprintf("Error creating release: %v", err))
 				} else {
