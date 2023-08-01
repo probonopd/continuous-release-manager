@@ -18,26 +18,22 @@ jobs:
       with:
         go-version: '1.16'
 
-    - name: Build binaries
+    - name: Build binaries for Linux and FreeBSD
       run: |
         go mod init github.com/probonopd/continuous-release-manager
         go get github.com/google/go-github/github
         go get golang.org/x/oauth2
-        go build -ldflags="-s -w" -o continuous-release-manager-386
-        go build -ldflags="-s -w" -o continuous-release-manager-amd64
-        GOARCH=arm go build -ldflags="-s -w" -o continuous-release-manager-arm
-        GOARCH=arm64 go build -ldflags="-s -w" -o continuous-release-manager-arm64
+        go build -ldflags="-s -w" -o continuous-release-manager-linux
+        GOOS=freebsd go build -ldflags="-s -w" -o continuous-release-manager-freebsd
 
     - name: Create "continuous" release
-      run: ./continuous-release-manager-amd64
+      run: ./continuous-release-manager-linux
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload binary to release
+    - name: Upload binaries to release
       run: |
-        gh release upload continuous ./continuous-release-manager-386
-        gh release upload continuous ./continuous-release-manager-amd64
-        gh release upload continuous ./continuous-release-manager-arm
-        gh release upload continuous ./continuous-release-manager-arm64
+        gh release upload continuous ./continuous-release-manager-linux
+        gh release upload continuous ./continuous-release-manager-freebsd
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
