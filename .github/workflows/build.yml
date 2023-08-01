@@ -33,8 +33,12 @@ jobs:
 
     - name: Upload binaries to release
       run: |
-        gh release upload continuous ./continuous-release-manager-linux
-        gh release upload continuous ./continuous-release-manager-freebsd
-        gh release edit continuous --draft=false
+        release_id=$(gh release list | grep "continuous" | cut -f1)
+        if [ -z "$release_id" ]; then
+          echo "Error: Release 'continuous' not found."
+          exit 1
+        fi
+        gh release upload $release_id ./continuous-release-manager-linux
+        gh release upload $release_id ./continuous-release-manager-freebsd
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
