@@ -38,21 +38,24 @@ func main() {
 	release, _, err := client.Repositories.GetReleaseByTag(ctx, repoOwner, repoName, releaseTag)
 	if err != nil {
 		// An error occurred while retrieving the release
-		logError(fmt.Sprintf("Error retrieving release: %v", err))
-	} else if release == nil {
-		// The release does not exist yet, proceed to create it
-		logInfo("Release with the name 'continuous' does not exist. Creating a new release...")
-		newRelease := &github.RepositoryRelease{
-			TagName:         &releaseTag,
-			TargetCommitish: &releaseCommitHash,
-			Name:            &releaseName,
-		}
-		createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
-		if err != nil {
-			logError(fmt.Sprintf("Error creating release: %v", err))
+		if _, ok := err.(*github.ErrorResponse); ok && err.(*github.ErrorResponse).Response.StatusCode == 404 {
+			// The release does not exist yet, proceed to create it
+			logInfo("Release with the name 'continuous' does not exist. Creating a new release...")
+			newRelease := &github.RepositoryRelease{
+				TagName:         &releaseTag,
+				TargetCommitish: &releaseCommitHash,
+				Name:            &releaseName,
+			}
+			createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
+			if err != nil {
+				logError(fmt.Sprintf("Error creating release: %v", err))
+			} else {
+				logInfo("New release created successfully!")
+				logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
+			}
 		} else {
-			logInfo("New release created successfully!")
-			logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
+			// Another error occurred while retrieving the release
+			logError(fmt.Sprintf("Error retrieving release: %v", err))
 		}
 	} else {
 		// The release exists, compare the commit hashes
