@@ -40,3 +40,4 @@ jobs:
         draft: false
         verbose: true
         branches: main
+        update_latest_release: true
