@@ -17,39 +17,7 @@ To use the tool, set up a GitHub Actions workflow (or any CI/CD system) to autom
 ## GitHub Actions Example
 
 ```yaml
-name: Build and Continuous Release
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.16'
-
-    - name: Build binary
-      run: go build -o continuous-release-manager
-
-    - name: Create "continuous" release
-      run: ./continuous-release-manager
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload binary to release
-      run: |
-        gh release upload continuous ./continuous-release-manager
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+...
 ```
 
 ## License
