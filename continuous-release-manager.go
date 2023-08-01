@@ -37,41 +37,38 @@ func main() {
 	logInfo("Checking for existing release...")
 	release, _, err := client.Repositories.GetReleaseByTag(ctx, repoOwner, repoName, releaseTag)
 	if err != nil {
+		// An error occurred while retrieving the release
 		logError(fmt.Sprintf("Error retrieving release: %v", err))
-		os.Exit(1)
-	}
-
-	if release != nil {
-		// Check if the existing release's commit hash is different from the desired one
+	} else if release == nil {
+		// The release does not exist yet, proceed to create it
+		logInfo("Release with the name 'continuous' does not exist. Creating a new release...")
+		newRelease := &github.RepositoryRelease{
+			TagName:         &releaseTag,
+			TargetCommitish: &releaseCommitHash,
+			Name:            &releaseName,
+		}
+		createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
+		if err != nil {
+			logError(fmt.Sprintf("Error creating release: %v", err))
+		} else {
+			logInfo("New release created successfully!")
+			logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
+		}
+	} else {
+		// The release exists, compare the commit hashes
+		logVerbose(fmt.Sprintf("Release found with ID: %d", *release.ID))
 		if *release.TargetCommitish != releaseCommitHash {
 			logVerbose("Existing release commit hash differs from the desired one. Deleting the existing release...")
 			_, err := client.Repositories.DeleteRelease(ctx, repoOwner, repoName, *release.ID)
 			if err != nil {
 				logError(fmt.Sprintf("Error deleting release: %v", err))
-				os.Exit(1)
+			} else {
+				logInfo("Existing release deleted successfully.")
 			}
-			logInfo("Existing release deleted successfully.")
 		} else {
 			logInfo("Release with the name 'continuous' already exists and has the desired commit hash.")
-			os.Exit(0)
 		}
 	}
-
-	// Create the new release
-	logInfo("Creating a new release...")
-	newRelease := &github.RepositoryRelease{
-		TagName:         &releaseTag,
-		TargetCommitish: &releaseCommitHash,
-		Name:            &releaseName,
-	}
-	createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
-	if err != nil {
-		logError(fmt.Sprintf("Error creating release: %v", err))
-		os.Exit(1)
-	}
-
-	logInfo("New release created successfully!")
-	logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
 }
 
 func logInfo(msg string) {
