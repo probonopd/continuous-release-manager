@@ -35,6 +35,7 @@ jobs:
       run: |
         wget -cq https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
         tar xvfz ghr_*.tar.gz
-        ./ghr_*/ghr --username "$GITHUB_ACTOR" --token "$GITHUB_TOKEN" --replace --debug continuous ./continuous-release-manager-linux ./continuous-release-manager-freebsd
+        git_tag=${GITHUB_REF#refs/tags/}
+        ./ghr_*/ghr --username "$GITHUB_ACTOR" --token "$GITHUB_TOKEN" --replace --debug -t "$git_tag" continuous ./continuous-release-manager-linux ./continuous-release-manager-freebsd
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
