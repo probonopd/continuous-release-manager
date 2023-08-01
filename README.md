@@ -14,17 +14,6 @@ The GitHub Continuous Release Manager is a Go tool that automates the process of
 
 To use the tool, set up a GitHub Actions workflow (or any CI/CD system) to automatically trigger the tool whenever changes are pushed to the repository. The tool will handle creating, updating, or deleting the "continuous" release as needed.
 
-## Installation
-
-1. Clone this repository or copy the "continuous_release_manager.go" file to your project.
-
-2. Set up the required environment variables:
-   - `GITHUB_TOKEN`: GitHub personal access token with the necessary permissions to manage releases in your repository.
-
-3. Customize the `repoOwner`, `repoName`, `releaseTag`, and `releaseCommitHash` variables in the tool to match your repository details and desired release information.
-
-4. Run the tool manually or set up a CI/CD system to automate the process.
-
 ## GitHub Actions Example
 
 ```yaml
