@@ -27,6 +27,7 @@ jobs:
         GOOS=freebsd go build -ldflags="-s -w" -o continuous-release-manager-freebsd
 
     - name: Create "continuous" release
+      if: github.event_name == 'push'  # Only run for push events, not pull requests
       run: ./continuous-release-manager-linux
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
