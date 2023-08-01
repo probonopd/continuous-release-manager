@@ -22,13 +22,28 @@ func main() {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	repoOwner := os.Getenv("GITHUB_REPOSITORY_OWNER")
-	repoFullName := os.Getenv("GITHUB_REPOSITORY")
-	repoName := extractRepositoryName(repoFullName)
-	releaseTag := "continuous"
-	releaseCommitHash := os.Getenv("GITHUB_SHA")
+	repoOwner := ""
+	repoName := ""
+	releaseCommitHash := ""
 	releaseName := "continuous"
+	releaseTag := "continuous"
 
+	isGitHubActions := os.Getenv("GITHUB_ACTIONS") == "true"
+	isCirrusCI := os.Getenv("CIRRUS_CI") == "true"
+
+	if isGitHubActions {
+		repoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
+		repoName = extractRepositoryName(os.Getenv("GITHUB_REPOSITORY"))
+		releaseCommitHash = os.Getenv("GITHUB_SHA")
+	} else if isCirrusCI {
+		repoOwner = os.Getenv("CIRRUS_REPO_OWNER")
+		repoName = os.Getenv("CIRRUS_REPO_NAME")
+		releaseCommitHash = os.Getenv("CIRRUS_CHANGE_IN_REPO")
+	} else {
+		fmt.Println("Error: Unsupported CI environment.")
+		os.Exit(1)
+	}
+	
 	logInfo("Starting release management...")
 	logVerbose(fmt.Sprintf("Repository Owner: %s", repoOwner))
 	logVerbose(fmt.Sprintf("Repository Name: %s", repoName))
