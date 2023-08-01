@@ -42,4 +42,3 @@ jobs:
         branches: main
         update_latest_release: true
         tag_name: continuous
-        # release_id: ... # May need to use this to force using this particular release?
