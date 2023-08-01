@@ -23,10 +23,10 @@ jobs:
         go mod init github.com/probonopd/continuous-release-manager
         go get github.com/google/go-github/github
         go get golang.org/x/oauth2
-        go build -o continuous-release-manager-386
-        go build -o continuous-release-manager-amd64
-        GOARCH=arm go build -o continuous-release-manager-arm
-        GOARCH=arm64 go build -o continuous-release-manager-arm64
+        go build -ldflags="-s -w" -o continuous-release-manager-386
+        go build -ldflags="-s -w" -o continuous-release-manager-amd64
+        GOARCH=arm go build -ldflags="-s -w" -o continuous-release-manager-arm
+        GOARCH=arm64 go build -ldflags="-s -w" -o continuous-release-manager-arm64
 
     - name: Create "continuous" release
       run: ./continuous-release-manager-amd64
