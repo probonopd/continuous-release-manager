@@ -79,6 +79,12 @@ task:
 WARNING: found release (continuous). Use existing one.
 ```
 
+### Projects using this
+
+* https://github.com/helloSystem/launch/
+* https://github.com/probonopd/Filer/
+* ...
+  
 ## License
 
 The GitHub Continuous Release Manager is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
