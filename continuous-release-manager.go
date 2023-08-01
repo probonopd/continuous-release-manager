@@ -43,7 +43,7 @@ func main() {
 		fmt.Println("Error: Unsupported CI environment.")
 		os.Exit(1)
 	}
-	
+
 	logInfo("Starting release management...")
 	logVerbose(fmt.Sprintf("Repository Owner: %s", repoOwner))
 	logVerbose(fmt.Sprintf("Repository Name: %s", repoName))
@@ -84,13 +84,19 @@ func main() {
 		// The release exists, compare the commit hashes
 		logVerbose(fmt.Sprintf("Release found with ID: %d", *release.ID))
 		if *release.TargetCommitish != releaseCommitHash {
-			logVerbose("Existing release commit hash differs from the desired one. Deleting the existing release...")
+			logVerbose("Existing release commit hash differs from the desired one. Deleting the existing release and tag...")
 			_, err := client.Repositories.DeleteRelease(ctx, repoOwner, repoName, *release.ID)
 			if err != nil {
 				logError(fmt.Sprintf("Error deleting release: %v", err))
 			} else {
 				logInfo("Existing release deleted successfully.")
-	
+				_, err := client.Git.DeleteRef(ctx, repoOwner, repoName, fmt.Sprintf("tags/%s", releaseTag))
+				if err != nil {
+					logError(fmt.Sprintf("Error deleting tag: %v", err))
+				} else {
+					logInfo("Existing tag deleted successfully.")
+				}
+
 				// Proceed to create a new release to replace the deleted one
 				newRelease := &github.RepositoryRelease{
 					TagName:         &releaseTag,
