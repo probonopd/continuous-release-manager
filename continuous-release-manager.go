@@ -62,7 +62,6 @@ func main() {
 				TagName:         &releaseTag,
 				TargetCommitish: &releaseCommitHash,
 				Name:            &releaseName,
-				Draft:           github.Bool(false), // Set the Draft parameter to false
 			}
 			createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 			if err != nil {
@@ -103,7 +102,6 @@ func main() {
 					TagName:         &releaseTag,
 					TargetCommitish: &releaseCommitHash,
 					Name:            &releaseName,
-					Draft:           github.Bool(false), // Set the Draft parameter to false
 				}
 				createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 				if err != nil {
@@ -118,20 +116,13 @@ func main() {
 		}
 	}
 	// At the end, after all other operations are done
-	// Check if the release needs to be published (turned into a non-draft)
-	if !release.GetDraft() {
-		// The release is not a draft, no need to update it
-		logVerbose("Release is already a non-draft.")
+	// publish it to make it non-draft
+	logVerbose("Publishing release...")
+	_, _, err = client.Repositories.PublishRelease(ctx, repoOwner, repoName, *release.ID)
+	if err != nil {
+		logError(fmt.Sprintf("Error publishing release: %v", err))
 	} else {
-		// The release is a draft, update it to non-draft
-		logVerbose("Updating release to non-draft...")
-		release.Draft = github.Bool(false)
-		_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, *release.ID, release)
-		if err != nil {
-			logError(fmt.Sprintf("Error updating release to non-draft: %v", err))
-		} else {
-			logInfo("Release updated to non-draft successfully.")
-		}
+		logInfo("Release published successfully.")
 	}
 }
 
