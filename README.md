@@ -1,6 +1,6 @@
 # GitHub Continuous Release Manager
 
-The GitHub Continuous Release Manager is a Go tool that automates the process of managing continuous releases in a GitHub repository. The tool checks if a release with the name "continuous" already exists and compares its commit hash. If the commit hashes differ, the existing release is deleted to avoid conflicts. After verification, the tool creates a new release named "continuous" with the desired commit hash.
+This tool provides a "continuous" release that always reflects the latest commit hash of the branch being built on CI (e.g., GitHub Actions or Cirrus CI). The tool checks for an existing release named "continuous" in the repository. If the release does not exist, it creates a new one, or if it exists and its commit hash differs, it deletes the existing release and creates a new one with the latest commit hash. This ensures that the "continuous" release always points to the correct hash. The tool can be easily integrated into your repository's CI/CD pipeline, providing a reliable and automated way to manage continuous releases. It is especially useful if you want to upload binaries to releases from different CI systems (e.g., GitHub Actions and Cirrus CI).
 
 ## How it Works
 
