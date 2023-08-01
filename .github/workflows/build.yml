@@ -21,7 +21,7 @@ jobs:
     - name: Build binary
       run: |
            go mod init github.com/probonopd/continuous-release-manager
-           go get ...
+           go get github.com/google/go-github/github
            go build -o continuous-release-manager
 
     - name: Create "continuous" release
