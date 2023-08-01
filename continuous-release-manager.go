@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -132,6 +133,9 @@ func main() {
 	} else {
 		logInfo("Release published successfully.")
 	}
+	
+	// Maybe GitHub needs some time before we can upload there?
+	time.Sleep(1 * time.Second)
 }
 
 func extractRepositoryName(fullName string) string {
