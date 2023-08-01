@@ -37,6 +37,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         file: "continuous-release-manager-*"
+        tag_name: continuous
         draft: false
         verbose: true
         branches: main
