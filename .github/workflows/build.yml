@@ -35,5 +35,6 @@ jobs:
       run: |
         gh release upload continuous ./continuous-release-manager-linux
         gh release upload continuous ./continuous-release-manager-freebsd
+        gh release edit continuous --draft false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
