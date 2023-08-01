@@ -50,7 +50,13 @@ func main() {
 			}
 			createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
 			if err != nil {
-				logError(fmt.Sprintf("Error creating release: %v", err))
+				// Check if the error is due to insufficient permissions
+				if strings.Contains(err.Error(), "403 Resource not accessible by integration") {
+					fmt.Printf("Error creating release: Insufficient permissions. Please ensure that you have the necessary access rights.\n")
+					fmt.Printf("To fix this, go to https://github.com/%s/%s/settings/actions, under \"Workflow permissions\" set \"Read and write permissions\".\n", repoOwner, repoName)
+				} else {
+					logError(fmt.Sprintf("Error creating release: %v", err))
+				}
 			} else {
 				logInfo("New release created successfully!")
 				logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
@@ -69,7 +75,7 @@ func main() {
 				logError(fmt.Sprintf("Error deleting release: %v", err))
 			} else {
 				logInfo("Existing release deleted successfully.")
-
+	
 				// Proceed to create a new release to replace the deleted one
 				newRelease := &github.RepositoryRelease{
 					TagName:         &releaseTag,
