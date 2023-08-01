@@ -33,11 +33,10 @@ jobs:
 
     - name: Upload binaries to release
       run: |
-        wget -cq https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
-        tar xvfz ghr_*.tar.gz
+        wget https://github.com/tcnksm/ghr/files/5247714/ghr.zip ; unzip ghr.zip ; rm ghr.zip
         git_tag=${GITHUB_REF#refs/tags/}
         REPO_FULL_NAME="${GITHUB_REPOSITORY}"
         REPO_NAME="${REPO_FULL_NAME##*/}"
-        ./ghr_*/ghr -replace -t "${GITHUB_TOKEN}" -u "${{ github.repository_owner }}" -r "$REPO_NAME" -c "${{ github.sha }}" continuous ./continuous-release-manager-*
+        ./ghr -replace -t "${GITHUB_TOKEN}" -u "${{ github.repository_owner }}" -r "$REPO_NAME" -c "${{ github.sha }}" continuous ./continuous-release-manager-*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
