@@ -117,6 +117,22 @@ func main() {
 			logInfo("Release with the name 'continuous' already exists and has the desired commit hash.")
 		}
 	}
+	// At the end, after all other operations are done
+	// Check if the release needs to be published (turned into a non-draft)
+	if !release.GetDraft() {
+		// The release is not a draft, no need to update it
+		logVerbose("Release is already a non-draft.")
+	} else {
+		// The release is a draft, update it to non-draft
+		logVerbose("Updating release to non-draft...")
+		release.Draft = github.Bool(false)
+		_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, *release.ID, release)
+		if err != nil {
+			logError(fmt.Sprintf("Error updating release to non-draft: %v", err))
+		} else {
+			logInfo("Release updated to non-draft successfully.")
+		}
+	}
 }
 
 func extractRepositoryName(fullName string) string {
