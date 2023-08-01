@@ -32,11 +32,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload binaries to release
-      run: |
-        wget https://github.com/tcnksm/ghr/files/5247714/ghr.zip ; unzip ghr.zip ; rm ghr.zip
-        git_tag=${GITHUB_REF#refs/tags/}
-        REPO_FULL_NAME="${GITHUB_REPOSITORY}"
-        REPO_NAME="${REPO_FULL_NAME##*/}"
-        ./ghr -replace -t "${GITHUB_TOKEN}" -u "${{ github.repository_owner }}" -r "$REPO_NAME" -c "${{ github.sha }}" continuous ./continuous-release-manager-*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: AButler/upload-release-assets@v2.0
+      with:
+        files: 'continuous-release-manager-*'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        release-tag: continuous
