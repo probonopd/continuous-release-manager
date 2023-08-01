@@ -9,6 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        go-version: ['1.16']
+        arch: ['386', 'amd64', 'arm', 'arm64']
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -16,14 +21,14 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.16'
+        go-version: ${{ matrix.go-version }}
 
     - name: Build binary
       run: |
-           go mod init github.com/probonopd/continuous-release-manager
-           go get github.com/google/go-github/github
-           go get golang.org/x/oauth2
-           go build -o continuous-release-manager
+        go mod init github.com/probonopd/continuous-release-manager
+        go get github.com/google/go-github/github
+        go get golang.org/x/oauth2
+        GOARCH=${{ matrix.arch }} go build -o continuous-release-manager-${{ matrix.arch }}
 
     - name: Create "continuous" release
       run: ./continuous-release-manager
@@ -32,6 +37,6 @@ jobs:
 
     - name: Upload binary to release
       run: |
-        gh release upload continuous ./continuous-release-manager
+        gh release upload continuous ./continuous-release-manager-${{ matrix.arch }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
