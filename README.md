@@ -87,8 +87,9 @@ WARNING: found release (continuous). Use existing one.
 
 ### Projects using this
 
-* https://github.com/helloSystem/launch/
-* https://github.com/probonopd/Filer/
+* https://github.com/helloSystem/Menu
+* https://github.com/helloSystem/launch
+* https://github.com/probonopd/Filer
 * ...
   
 ## License
