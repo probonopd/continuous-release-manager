@@ -69,6 +69,20 @@ func main() {
 				logError(fmt.Sprintf("Error deleting release: %v", err))
 			} else {
 				logInfo("Existing release deleted successfully.")
+
+				// Proceed to create a new release to replace the deleted one
+				newRelease := &github.RepositoryRelease{
+					TagName:         &releaseTag,
+					TargetCommitish: &releaseCommitHash,
+					Name:            &releaseName,
+				}
+				createdRelease, _, err := client.Repositories.CreateRelease(ctx, repoOwner, repoName, newRelease)
+				if err != nil {
+					logError(fmt.Sprintf("Error creating release: %v", err))
+				} else {
+					logInfo("New release created successfully!")
+					logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
+				}
 			}
 		} else {
 			logInfo("Release with the name 'continuous' already exists and has the desired commit hash.")
