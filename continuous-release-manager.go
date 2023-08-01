@@ -115,11 +115,16 @@ func main() {
 			logInfo("Release with the name 'continuous' already exists and has the desired commit hash.")
 		}
 	}
-	// At the end, after all other operations are done
-	// publish it to make it non-draft
+	
+	targetRelease := release
+	if createdRelease != nil {
+		targetRelease = createdRelease
+	}
+
+	// At the end, after all other operations are done publish it to make it non-draft
 	logVerbose("Publishing release...")
-	release.Draft = github.Bool(false) // Set the Draft field to false
-	_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, *release.ID, release)
+	targetRelease.Draft = github.Bool(false) // Set the Draft field to false
+	_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, *targetRelease.ID, targetRelease)
 	if err != nil {
 		logError(fmt.Sprintf("Error publishing release: %v", err))
 	} else {
