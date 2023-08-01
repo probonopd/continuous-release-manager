@@ -32,6 +32,7 @@ To use the tool, set up a GitHub Actions workflow (or any CI/CD system) to autom
         if: github.event_name == 'push'  # Only run for push events, not pull requests
         run: |
           gh release upload continuous ./build/Filer_Ubuntu.zip
+          gh release edit continuous --draft false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
