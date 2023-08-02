@@ -163,6 +163,6 @@ func logVerbose(msg string) {
 	fmt.Fprintf(os.Stderr, "[VERBOSE] %s\n", msg)
 }
 
-func logError(msg string) {
-	fmt.Fprintf(os.Stderr, "[ERROR] %s\n", msg)
+func logError(format string, a ...interface{}) {
+    fmt.Fprintf(os.Stderr, "[ERROR] "+format+"\n", a...)
 }
