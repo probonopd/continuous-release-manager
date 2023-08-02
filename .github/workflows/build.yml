@@ -28,7 +28,10 @@ jobs:
 
     - name: Create "continuous" release
       if: github.event_name == 'push'  # Only run for push events, not pull requests
-      run: ./continuous-release-manager-linux
+      run: |
+            RELEASE_ID=$(./continuous-release-manager-linux)
+            echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
+
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -42,5 +45,5 @@ jobs:
         draft: false
         verbose: true
         branches: main
-        update_latest_release: true
         tag_name: continuous
+        release_id: ${{ env.RELEASE_ID }}
