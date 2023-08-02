@@ -19,27 +19,27 @@ To use the tool, set up a GitHub Actions workflow (or any CI/CD system) to autom
 ## GitHub Actions (for the Linux build)
 
 ```yaml
-      - name: Create GitHub Release using Continuous Release Manager
-        if: github.event_name == 'push'  # Only run for push events, not pull requests
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -L -o continuous-release-manager-linux https://github.com/probonopd/continuous-release-manager/releases/download/continuous/continuous-release-manager-linux
-          chmod +x continuous-release-manager-linux
-          ./continuous-release-manager-linux
+    - name: Create "continuous" release
+      if: github.event_name == 'push'  # Only run for push events, not pull requests
+      run: |
+            RELEASE_ID=$(./continuous-release-manager-linux)
+            echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
 
-      - name: Upload to GitHub Release
-        if: github.event_name == 'push'  # Only run for push events, not pull requests
-        uses: xresloader/upload-to-github-release@v1.3.12
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          file: "continuous-release-manager-*"
-          draft: false
-          verbose: true
-          branches: main
-          update_latest_release: true
-          tag_name: continuous
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload binaries to release
+      if: github.event_name == 'push'  # Only run for push events, not pull requests
+      uses: xresloader/upload-to-github-release@v1.3.12
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: "build/*zip"
+        draft: false
+        verbose: true
+        branches: main
+        tag_name: continuous
+        release_id: ${{ env.RELEASE_ID }}
 ```
 
 ## Cirrus CI (for the FreeBSD build)
