@@ -134,8 +134,8 @@ func main() {
 		logInfo("Release published successfully.")
 	}
 	
-	// Maybe GitHub needs some time before we can upload there?
-	time.Sleep(1 * time.Second)
+	// Useful for tools that shall upload to this specific release
+	fmt.Println("%v", *targetRelease.ID))
 }
 
 func extractRepositoryName(fullName string) string {
@@ -147,13 +147,13 @@ func extractRepositoryName(fullName string) string {
 }
 
 func logInfo(msg string) {
-	fmt.Printf("[INFO] %s\n", msg)
+	fmt.Fprintf(os.Stderr, "[INFO] %s\n", msg)
 }
 
 func logVerbose(msg string) {
-	fmt.Printf("[VERBOSE] %s\n", msg)
+	fmt.Fprintf(os.Stderr, "[VERBOSE] %s\n", msg)
 }
 
 func logError(msg string) {
-	fmt.Printf("[ERROR] %s\n", msg)
+	fmt.Fprintf(os.Stderr, "[ERROR] %s\n", msg)
 }
