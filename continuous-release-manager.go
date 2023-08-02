@@ -135,7 +135,7 @@ func main() {
 	}
 	
 	// Useful for tools that shall upload to this specific release
-	fmt.Println("%v", *targetRelease.ID))
+	fmt.Println("%v", *targetRelease.ID)
 }
 
 func extractRepositoryName(fullName string) string {
