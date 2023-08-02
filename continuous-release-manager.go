@@ -70,8 +70,8 @@ func main() {
 			if err != nil {
 				// Check if the error is due to insufficient permissions
 				if strings.Contains(err.Error(), "403 Resource not accessible by integration") {
-					fmt.Printf("Error creating release: Insufficient permissions. Please ensure that you have the necessary access rights.\n")
-					fmt.Printf("To fix this, go to https://github.com/%s/%s/settings/actions, under \"Workflow permissions\" set \"Read and write permissions\".\n", repoOwner, repoName)
+					logError("Error creating release: Insufficient permissions. Please ensure that you have the necessary access rights.\n")
+					logError("To fix this, go to https://github.com/%s/%s/settings/actions, under \"Workflow permissions\" set \"Read and write permissions\".\n", repoOwner, repoName)
 				} else {
 					logError(fmt.Sprintf("Error creating release: %v", err))
 				}
