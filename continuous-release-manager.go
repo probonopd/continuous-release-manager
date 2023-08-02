@@ -51,6 +51,7 @@ func main() {
 	logVerbose(fmt.Sprintf("Release Commit Hash: %s", releaseCommitHash))
 
 	var createdRelease *github.RepositoryRelease
+	var releaseID int64 // Declare the variable to store the Release ID
 
 	// Check if the release with the name "continuous" already exists
 	logInfo("Checking for existing release...")
@@ -77,6 +78,9 @@ func main() {
 			} else {
 				logInfo("New release created successfully!")
 				logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
+
+				// Store the Release ID
+				releaseID = *createdRelease.ID
 			}
 		} else {
 			// Another error occurred while retrieving the release
@@ -111,13 +115,19 @@ func main() {
 				} else {
 					logInfo("New release created successfully!")
 					logVerbose(fmt.Sprintf("Release ID: %v", *createdRelease.ID))
+
+					// Store the Release ID
+					releaseID = *createdRelease.ID
 				}
 			}
 		} else {
 			logInfo("Release with the name 'continuous' already exists and has the desired commit hash.")
+
+			// Store the Release ID
+			releaseID = *release.ID
 		}
 	}
-	
+
 	targetRelease := release
 	if createdRelease != nil {
 		targetRelease = createdRelease
@@ -126,15 +136,15 @@ func main() {
 	// At the end, after all other operations are done publish it to make it non-draft
 	logVerbose("Publishing release...")
 	targetRelease.Draft = github.Bool(false) // Set the Draft field to false
-	_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, *targetRelease.ID, targetRelease)
+	_, _, err = client.Repositories.EditRelease(ctx, repoOwner, repoName, releaseID, targetRelease)
 	if err != nil {
 		logError(fmt.Sprintf("Error publishing release: %v", err))
 	} else {
 		logInfo("Release published successfully.")
 	}
-	
-	// Useful for tools that shall upload to this specific release
-	fmt.Println("%v", *targetRelease.ID)
+
+	// Print the Release ID at the end
+	fmt.Println(releaseID)
 }
 
 func extractRepositoryName(fullName string) string {
